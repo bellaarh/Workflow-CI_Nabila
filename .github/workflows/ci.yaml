@@ -1,0 +1,32 @@
+name: CI Workflow
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up python
+      uses: actions/setup-python@v4
+
+    - name: Install dependencies
+      run: |
+        pip install mlflow==2.19.0 pandas scikit-learn
+
+    - name: Run MLflow Project
+      run: |
+        mlflow run MLProject --env-manager=local
+
+    - name: Upload Artifacts to Github
+      uses: actions/upload-artifacts@v4
+      with:
+        name: mlflow-models-artifacts
+        path: mlruns/
